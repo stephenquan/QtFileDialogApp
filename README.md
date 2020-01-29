@@ -18,7 +18,7 @@ In building this app, I observed the following on a Nexus 5P running Android 8.0
    - QFile.exists always reports false on Android
    - QFile.fileName is always empty string "" on Android
    - QFile.size is always 0 on Android
-   - However, the user can still read the file with QFile( url + "" ).readAll()
+   - However, the user can still read the file with QFile( url.toString() ).readAll()
  - QFileInfo no longer full works
    - QFileInfo.absolutePath returns a cryptic /data/data folder on Android
    - QFileInfo.absoluteFilePath returns a cryptic /data/data/ filename on Android
