@@ -16,200 +16,34 @@ Window {
     property var content: null
     property url fileUrl
 
-    Flickable {
-        id: flickable
-
+    Page {
         anchors.fill: parent
-        anchors.margins: 10
 
-        contentWidth: columnLayout.width
-        contentHeight: columnLayout.height
-        clip: true
-
-        ColumnLayout {
-            id: columnLayout
-
-            width: flickable.width
-            spacing: 10
-
-            Text {
-                Layout.alignment: Qt.AlignRight
-                text: qsTr( "AppFramework %1" ).arg( AppFramework.version )
-                font.pointSize: 8
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                color: "black"
-            }
-
-            Text {
-                text: qsTr( "FileUrl" )
-                font.bold: true
+        header: ToolBar {
+            ToolButton {
+                text: qsTr( "Back" )
                 font.pointSize: 15
+                enabled: stackView.depth > 1
+                onClicked: stackView.pop()
             }
+        }
 
-            Text {
-                id: fileUrlProperties
-                Layout.maximumWidth: parent.width
-                font.pointSize: 15
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-            }
+        StackView {
+            id: stackView
 
-            Flow {
-                Layout.alignment: Qt.AlignRight
-                Layout.maximumWidth: parent.width
-                spacing: 10
+            anchors.fill: parent
+
+            initialItem: Page {
 
                 Button {
-                    Layout.alignment: Qt.AlignRight
-                    text: qsTr( "Copy" )
+                    anchors.centerIn: parent
+
+                    text: qsTr( "Start Qt FileDialog App" )
                     font.pointSize: 15
-                    onClicked: AppFramework.copyToClipboard( fileDialog.fileUrl )
-                }
 
-                Button {
-                    Layout.alignment: Qt.AlignRight
-                    text: qsTr( "FileDialog" )
-                    font.pointSize: 15
-                    onClicked: fileDialog.open()
-                }
-
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                color: "black"
-            }
-
-            Text {
-                text: qsTr( "File" )
-                font.bold: true
-                font.pointSize: 15
-            }
-
-            Text {
-                id: fileProperties
-                Layout.maximumWidth: parent.width
-                font.pointSize: 15
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                color: "black"
-            }
-
-            Button {
-                Layout.alignment: Qt.AlignRight
-                text: qsTr( "Copy" )
-                font.pointSize: 15
-                enabled: app.fileUrl
-                onClicked: AppFramework.copyToClipboard( fileProperties.text )
-            }
-
-            Text {
-                text: qsTr( "FileInfo" )
-                font.bold: true
-                font.pointSize: 15
-            }
-
-            Text {
-                id: fileInfoProperties
-                Layout.maximumWidth: parent.width
-                font.pointSize: 15
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-            }
-
-            Button {
-                Layout.alignment: Qt.AlignRight
-                text: qsTr( "Copy" )
-                font.pointSize: 15
-                enabled: app.fileUrl
-                onClicked: AppFramework.copyToClipboard( fileInfoProperties.text )
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                color: "black"
-            }
-
-            Text {
-                text: qsTr( "Content" )
-                font.bold: true
-                font.pointSize: 15
-            }
-
-            Text {
-                Layout.maximumWidth: parent.width
-                font.pointSize: 15
-                text: app.content || ""
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-            }
-
-            Button {
-                Layout.alignment: Qt.AlignRight
-                text: qsTr( "Read" )
-                font.pointSize: 15
-                enabled: app.fileUrl
-
-                onClicked: {
-                    let file = AppFramework.file( app.fileUrl );
-                    app.content = file.readAll();
+                    onClicked: stackView.push( "FileDialogTest.qml" );
                 }
             }
-
         }
-    }
-
-    FileDialog {
-        id: fileDialog
-
-        onAccepted: updateAppWithFileUrl( fileUrl );
-    }
-
-    Component.onCompleted: {
-        let fileUrl = AppFramework.loadFromSettings( "fileUrl" );
-        if ( fileUrl ) {
-            updateAppWithFileUrl( fileUrl );
-
-        }
-    }
-
-    function updateAppWithFileUrl( fileUrl ) {
-        app.content = null;
-        app.fileUrl = fileUrl;
-
-        let info = [
-                "url: %1".arg( JSON.stringify( fileUrl ) )
-            ];
-        fileUrlProperties.text = info.join( "\n" );
-
-        let file = AppFramework.file( fileUrl );
-        info = [
-                "canRead: %1".arg( JSON.stringify( file.canRead ) ),
-                "exists: %1".arg( JSON.stringify( file.exists ) ),
-                "fileName: %1".arg( JSON.stringify( file.fileName ) ),
-                "size: %1".arg( JSON.stringify( file.size ) ),
-                ];
-        fileProperties.text = info.join( "\n" );
-
-        let fileInfo = AppFramework.fileInfo( fileUrl );
-        info = [
-                "absolutePath: %1".arg( JSON.stringify( fileInfo.absolutePath ) ),
-                "absoluteFilePath: %1".arg( JSON.stringify( fileInfo.absoluteFilePath ) ),
-                "baseName: %1".arg( JSON.stringify( fileInfo.baseName ) ),
-                "exists: %1".arg( JSON.stringify( fileInfo.exists ) ),
-                "fileName: %1".arg( JSON.stringify( fileInfo.fileName ) ),
-                "filePath: %1".arg( JSON.stringify( fileInfo.filePath ) ),
-                "size: %1".arg( JSON.stringify( fileInfo.size ) ),
-                ];
-        fileInfoProperties.text = info.join( "\n" );
-
-        AppFramework.saveToSettings( "fileUrl", fileUrl );
     }
 }
