@@ -92,18 +92,18 @@ Page {
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
             }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                color: "black"
-            }
-
             Button {
                 Layout.alignment: Qt.AlignRight
                 text: qsTr( "Copy" )
                 font.pointSize: 15
                 enabled: fileDialogTest.fileUrl
                 onClicked: AppFramework.copyToClipboard( fileProperties.text )
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 1
+                color: "black"
             }
 
             Text {
@@ -125,6 +125,69 @@ Page {
                 font.pointSize: 15
                 enabled: fileDialogTest.fileUrl
                 onClicked: AppFramework.copyToClipboard( fileInfoProperties.text )
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 1
+                color: "black"
+            }
+
+            Text {
+                text: qsTr( "ContentUrl Info" )
+                font.bold: true
+                font.pointSize: 15
+            }
+
+            /*
+            Text {
+                id: appFrameworkProperties
+                Layout.maximumWidth: parent.width
+                font.pointSize: 15
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            }
+            */
+
+            Repeater {
+                model: [
+                    "BUCKET_DISPLAY_NAME",
+                    "BUCKET_ID",
+                    "DATA",
+                    "DATE_ADDED",
+                    "DATE_EXPIRES",
+                    "DATE_MODIFIED",
+                    "DATE_TAKEN",
+                    "DISPLAY_NAME",
+                    "DOCUMENT_ID",
+                    "DURATION",
+                    "HEIGHT",
+                    "INSTANCE_ID",
+                    "IS_PENDING",
+                    "MIME_TYPE",
+                    "ORIENTATION",
+                    "ORIGINAL_DOCUMENT_ID",
+                    "OWNER_PACKAGE_NAME",
+                    "RELATIVE_PATH",
+                    "SIZE",
+                    "TITLE",
+                    "VOLUMN_NAME",
+                    "WIDTH"
+                ]
+
+                delegate: ColumnLayout {
+                    Layout.fillWidth: true
+
+                    Text {
+                        text: modelData
+                        font.pointSize: 15
+                        font.bold: true
+                    }
+
+                    Text {
+                        text: JSON.stringify( AppFramework.contentUriInfo( fileDialog.fileUrl, modelData ) ) || "undefined"
+                        font.pointSize: 15
+                    }
+                }
             }
 
             Rectangle {
@@ -158,20 +221,25 @@ Page {
                 }
             }
 
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 1
+                color: "black"
+            }
+
         }
     }
 
     FileDialog {
         id: fileDialog
 
-        onAccepted: updateAppWithFileUrl( fileUrl );
+        onAccepted: updateAppWithFileUrl( fileUrl )
     }
 
     Component.onCompleted: {
         let fileUrl = AppFramework.loadFromSettings( "fileUrl" );
         if ( fileUrl ) {
             updateAppWithFileUrl( fileUrl );
-
         }
     }
 

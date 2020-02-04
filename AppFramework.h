@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 #include <QJSEngine>
 #include <QSettings>
+#include <QUrl>
 
 class File;
 class FileInfo;
@@ -24,6 +25,7 @@ public:
     Q_INVOKABLE QVariant loadFromClipboard() const;
     Q_INVOKABLE QVariant loadFromSettings( const QString& key );
     Q_INVOKABLE void saveToSettings( const QString& key, const QString& value );
+    Q_INVOKABLE QVariant contentUriInfo( const QUrl& url, const QString& columnName );
 
     static QObject *singletonProvider( QQmlEngine *engine, QJSEngine *scriptEngine );
 
